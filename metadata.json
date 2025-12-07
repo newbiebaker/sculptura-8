@@ -1,0 +1,5 @@
+{
+  "name": "index.html v8",
+  "description": "A minimalistic, ephemeral drag-and-drop hosting interface for HTML projects. Upload .html files to generate instant viewable links.",
+  "requestFramePermissions": []
+}
