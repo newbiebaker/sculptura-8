@@ -19,6 +19,7 @@ interface FolderItemProps {
   onReorderFolders?: (dragId: string, hoverId: string) => void;
   draggedItemId?: string | null;
   onSetDragId?: (id: string | null) => void;
+  onRenameFolder: (id: string, newName: string) => void;
 }
 
 const FolderItem: React.FC<FolderItemProps> = ({ 
@@ -36,7 +37,8 @@ const FolderItem: React.FC<FolderItemProps> = ({
   level = 0,
   onReorderFolders,
   draggedItemId,
-  onSetDragId
+  onSetDragId,
+  onRenameFolder
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -195,12 +197,27 @@ const FolderItem: React.FC<FolderItemProps> = ({
                <FolderIcon size={16} strokeWidth={1.5} className="text-current opacity-80" />
           )}
           
-          {/* Blurred text if hidden, but background intact */}
-          <span className={`font-mono text-sm text-current font-medium transition-all duration-300
-             ${!folder.isVisible ? 'blur-[4px] opacity-40 select-none' : ''}
-          `}>
-             {folder.name}
-          </span>
+          {/* Editable Folder Name */}
+          {isEditing ? (
+            <input
+                type="text"
+                value={folder.name}
+                onChange={(e) => onRenameFolder(folder.id, e.target.value)}
+                onClick={(e) => e.stopPropagation()} // Prevent expand/collapse
+                onMouseDown={(e) => e.stopPropagation()} // Prevent drag start on text click
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.currentTarget.blur();
+                }}
+                className="bg-transparent border-none outline-none font-mono text-sm text-current font-medium w-full min-w-[50px] focus:ring-0 p-0 placeholder-current/30"
+                spellCheck={false}
+            />
+          ) : (
+            <span className={`font-mono text-sm text-current font-medium transition-all duration-300
+                ${!folder.isVisible ? 'blur-[4px] opacity-40 select-none' : ''}
+            `}>
+                {folder.name}
+            </span>
+          )}
           
           {isEditing && (
             <span className="text-[10px] text-current opacity-30 font-mono animate-in fade-in">
@@ -271,6 +288,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
                                     onReorderFolders={onReorderFolders}
                                     draggedItemId={draggedItemId}
                                     onSetDragId={onSetDragId}
+                                    onRenameFolder={onRenameFolder}
                                 />
                             ))}
 

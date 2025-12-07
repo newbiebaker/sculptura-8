@@ -222,6 +222,10 @@ const App: React.FC = () => {
     }
   };
 
+  const renameFolder = (id: string, newName: string) => {
+    setFolders(prev => prev.map(f => f.id === id ? { ...f, name: newName } : f));
+  };
+
   const toggleProjectVisibility = (id: string) => {
       setProjects(prev => prev.map(p => p.id === id ? { ...p, isVisible: !p.isVisible } : p));
   };
@@ -717,6 +721,7 @@ const App: React.FC = () => {
                     onReorderFolders={reorderFolders}
                     draggedItemId={draggedItemId}
                     onSetDragId={setDraggedItemId}
+                    onRenameFolder={renameFolder}
                  />
                ))}
 
